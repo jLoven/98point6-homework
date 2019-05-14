@@ -1,0 +1,16 @@
+.flex-container {
+    display: flex;
+}
+
+.red-filled-circle {
+    width: 15vw;
+    height: 15vw;
+    border-radius: 50%;
+    border: 1px solid red;
+    background-color: red;
+}
+
+.column {
+    width: 20vw;
+    text-align: center;
+}
