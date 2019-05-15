@@ -11,6 +11,11 @@
 }
 
 .column {
-    width: 20vw;
+    width: 15vw;
     text-align: center;
+}
+
+.row {
+    height: 15vw;
+    outline: 1px solid gray;
 }

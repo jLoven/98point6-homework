@@ -22,7 +22,7 @@ class App extends Component {
         this.state = {
             isLoaded: false,
             board: getInitializedBoard(4, 4),
-            active: false,
+            moves: [],
         };
     }
 
@@ -32,28 +32,47 @@ class App extends Component {
         });
     }
 
-    toggleClass() {
-        const { active } = this.state;
-        this.setState({ 
-            active: !active,
-        });
-    };
+    /**
+     * Updates the state to contain the column index of the latest move. 
+     */
+    updateMoves(columnIndex) {
+        var { moves } = this.state;
+        moves.push(columnIndex);
+        this.setState({ moves: moves });
+    }
+
+    /**
+     * Get the lowest item in the column that doesn't have a marker in it, and place a marker there.
+     */
+    addMarkerToLowestPositionInColumn(columnIndex) {
+        var { board } = this.state;
+
+        for (var i = board[columnIndex].length; i >= 0; i--) {
+            if (board[columnIndex][i] === 0) {
+                board[columnIndex][i] = 1;
+                this.updateMoves(columnIndex)
+                break;
+            }
+        }
+
+        this.setState({ board: board });
+    }
 
     render() {
-        const { isLoaded, board, active } = this.state;
+        const { isLoaded, board } = this.state;
 
         if (!isLoaded) {
             return <div>{ LOADING_TEXT }</div>;
         } else {
             return(
                 <div className="flex-container">
-                    { board.map(column => (
-                        <div className={ 
-                            active ? 'column red-filled-circle': 'column' }  
-                            key={ shortid.generate() }
-                            onClick={ () => this.toggleClass() }>
+                    { board.map((column, index) => (
+                        <div className='column'
+                            key={ index }
+                            onClick={ () => this.addMarkerToLowestPositionInColumn(index) }>
                                 { column.map(element => (
-                                    <div className="row" key={ shortid.generate() }>{ element }</div>
+                                    <div className={ element === 1 ? 'row red-filled-circle': 'row' }
+                                        key={ shortid.generate() }></div>
                                 )) }
                         </div>
                     )) }
