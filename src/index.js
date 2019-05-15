@@ -3,8 +3,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import shortid from 'shortid'; //  Used to generate unique key for elements of gameboard array
+var fetch = require('fetch-retry');
 
-import { LOADING_TEXT } from './constants/constants.js';
+import { LOADING_TEXT, RETRY_CONDITIONS } from './constants/constants.js';
+import { getApiEndpointWithQueryParams } from './provider/apiEndpointProvider.js';
 
 import './styles/gameboard.css';
 
@@ -27,15 +29,13 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.setState({
-            isLoaded: true,
-        });
+        this.setState({ isLoaded: true });
     }
 
     /**
-     * Updates the state to contain the column index of the latest move. 
+     * Updates the state to contain the column index of the latest user move. 
      */
-    updateMoves(columnIndex) {
+    updateUserMoves(columnIndex) {
         var { moves } = this.state;
         moves.push(columnIndex);
         this.setState({ moves: moves });
@@ -50,7 +50,7 @@ class App extends Component {
         for (var i = board[columnIndex].length; i >= 0; i--) {
             if (board[columnIndex][i] === 0) {
                 board[columnIndex][i] = 1;
-                this.updateMoves(columnIndex)
+                this.updateUserMoves(columnIndex)
                 break;
             }
         }
@@ -58,8 +58,27 @@ class App extends Component {
         this.setState({ board: board });
     }
 
+    getNextOpponentMove() {
+        const { moves } = this.state;
+        const endpoint = getApiEndpointWithQueryParams(moves);
+
+        fetch(endpoint, RETRY_CONDITIONS)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({ moves: result });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            );
+    }
+
     render() {
-        const { isLoaded, board } = this.state;
+        const { isLoaded, board, moves } = this.state;
 
         if (!isLoaded) {
             return <div>{ LOADING_TEXT }</div>;
@@ -69,7 +88,7 @@ class App extends Component {
                     { board.map((column, index) => (
                         <div className='column'
                             key={ index }
-                            onClick={ () => this.addMarkerToLowestPositionInColumn(index) }>
+                            onClick={ () => {this.addMarkerToLowestPositionInColumn(index); this.getNextOpponentMove(moves)} }>
                                 { column.map(element => (
                                     <div className={ element === 1 ? 'row red-filled-circle': 'row' }
                                         key={ shortid.generate() }></div>

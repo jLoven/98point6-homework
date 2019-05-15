@@ -12,6 +12,7 @@
     "babel": "^6.23.0",
     "babel-loader": "^8.0.6",
     "css-loader": "^2.1.1",
+    "fetch-retry": "^2.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "shortid": "^2.2.14",
