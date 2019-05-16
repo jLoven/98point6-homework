@@ -2,12 +2,22 @@
     display: flex;
 }
 
-.red-filled-circle {
+.filled-circle {
     width: 15vw;
     height: 15vw;
     border-radius: 50%;
+}
+
+.red-filled-circle {
+    @extend .filled-circle;
     border: 1px solid red;
     background-color: red;
+}
+
+.blue-filled-circle {
+    @extend .filled-circle;
+    border: 1px solid blue;
+    background-color: blue;
 }
 
 .column {

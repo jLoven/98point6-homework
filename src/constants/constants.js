@@ -18,8 +18,14 @@ const RETRY_CONDITIONS = {
 	retryOn: [500],
 };
 
+// Refer to gameboard.scss for style names
+const RED_CIRCLE_STYLE = 'red-filled-circle';
+const BLUE_CIRCLE_STYLE = 'blue-filled-circle';
+
 export {
 	LOADING_TEXT,
 	API_ENDPOINT,
 	RETRY_CONDITIONS,
+	RED_CIRCLE_STYLE,
+	BLUE_CIRCLE_STYLE,
 };

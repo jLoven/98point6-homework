@@ -5,10 +5,10 @@ import ReactDOM from 'react-dom';
 import shortid from 'shortid'; //  Used to generate unique key for elements of gameboard array
 var fetch = require('fetch-retry');
 
-import { LOADING_TEXT, RETRY_CONDITIONS } from './constants/constants.js';
+import { LOADING_TEXT, RETRY_CONDITIONS, RED_CIRCLE_STYLE, BLUE_CIRCLE_STYLE } from './constants/constants.js';
 import { getApiEndpointWithQueryParams } from './provider/apiEndpointProvider.js';
 
-import './styles/gameboard.css';
+import './styles/gameboard.scss';
 
 function getInitializedBoard(width, height) {
     var rows = new Array(height);
@@ -16,6 +16,21 @@ function getInitializedBoard(width, height) {
         rows[i] = new Array(width).fill(0);
     }
     return rows;
+}
+
+function getElementColorStyle(element) {
+    var style;
+    switch(element) {
+        case 1:
+            style = RED_CIRCLE_STYLE;
+            break;
+        case 2:
+            style = BLUE_CIRCLE_STYLE;
+            break;
+        default:
+            style = '';
+    }
+    return style;
 }
 
 class App extends Component {
@@ -35,7 +50,7 @@ class App extends Component {
     /**
      * Updates the state to contain the column index of the latest user move. 
      */
-    updateUserMoves(columnIndex) {
+    updateMoves(columnIndex) {
         var { moves } = this.state;
         moves.push(columnIndex);
         this.setState({ moves: moves });
@@ -44,17 +59,16 @@ class App extends Component {
     /**
      * Get the lowest item in the column that doesn't have a marker in it, and place a marker there.
      */
-    addMarkerToLowestPositionInColumn(columnIndex) {
+    addMarkerToLowestPositionInColumn(columnIndex, isOpponent) {
         var { board } = this.state;
 
         for (var i = board[columnIndex].length; i >= 0; i--) {
             if (board[columnIndex][i] === 0) {
-                board[columnIndex][i] = 1;
-                this.updateUserMoves(columnIndex)
+                isOpponent ? board[columnIndex][i] = 2 : board[columnIndex][i] = 1;
+                this.updateMoves(columnIndex);
                 break;
             }
         }
-
         this.setState({ board: board });
     }
 
@@ -66,7 +80,8 @@ class App extends Component {
             .then(res => res.json())
             .then(
                 (result) => {
-                    this.setState({ moves: result });
+                    const opponentMove = result[result.length - 1];
+                    this.addMarkerToLowestPositionInColumn(opponentMove, true);
                 },
                 (error) => {
                     this.setState({
@@ -77,8 +92,14 @@ class App extends Component {
             );
     }
 
+    updateBoardWithNextOpponentMove(userMove) {
+        const { moves } = this.state;
+        this.addMarkerToLowestPositionInColumn(userMove, false);
+        this.getNextOpponentMove(moves)
+    }
+
     render() {
-        const { isLoaded, board, moves } = this.state;
+        const { isLoaded, board } = this.state;
 
         if (!isLoaded) {
             return <div>{ LOADING_TEXT }</div>;
@@ -86,11 +107,10 @@ class App extends Component {
             return(
                 <div className="flex-container">
                     { board.map((column, index) => (
-                        <div className='column'
-                            key={ index }
-                            onClick={ () => {this.addMarkerToLowestPositionInColumn(index); this.getNextOpponentMove(moves)} }>
+                        <div className='column' key={ index }
+                            onClick={ () => this.updateBoardWithNextOpponentMove(index) }>
                                 { column.map(element => (
-                                    <div className={ element === 1 ? 'row red-filled-circle': 'row' }
+                                    <div className={ `row ${getElementColorStyle(element)}` }
                                         key={ shortid.generate() }></div>
                                 )) }
                         </div>
