@@ -5,8 +5,13 @@ import ReactDOM from 'react-dom';
 import shortid from 'shortid'; //  Used to generate unique key for elements of gameboard array
 var fetch = require('fetch-retry');
 
-import { LOADING_TEXT, RETRY_CONDITIONS, RED_CIRCLE_STYLE, BLUE_CIRCLE_STYLE } from './constants/constants.js';
+import { 
+    LOADING_TEXT, RETRY_CONDITIONS,
+    RED_CIRCLE_STYLE,
+    BLUE_CIRCLE_STYLE,
+    REQUIRED_SEQUENTIAL_TOKENS_TO_WIN } from './constants/constants.js';
 import { getApiEndpointWithQueryParams } from './provider/apiEndpointProvider.js';
+import { doesCurrentMoveWinGame } from './validator/gameWinValidator.js';
 
 import './styles/gameboard.scss';
 
@@ -66,6 +71,8 @@ class App extends Component {
             if (board[columnIndex][i] === 0) {
                 isOpponent ? board[columnIndex][i] = 2 : board[columnIndex][i] = 1;
                 this.updateMoves(columnIndex);
+                
+                console.log(this.doesCurrentMoveWinGameForBoard(columnIndex, i));
                 break;
             }
         }
@@ -98,6 +105,14 @@ class App extends Component {
         this.getNextOpponentMove(moves)
     }
 
+    /**
+     * Validates whether this board is a winning board for the current move at columnIndex, rowIndex.
+     */
+    doesCurrentMoveWinGameForBoard(columnIndex, rowIndex) {
+        const { board } = this.state;
+        return doesCurrentMoveWinGame(board, columnIndex, rowIndex);
+    }
+
     render() {
         const { isLoaded, board } = this.state;
 
@@ -106,10 +121,10 @@ class App extends Component {
         } else {
             return(
                 <div className="flex-container">
-                    { board.map((column, index) => (
-                        <div className='column' key={ index }
-                            onClick={ () => this.updateBoardWithNextOpponentMove(index) }>
-                                { column.map(element => (
+                    { board.map((column, columnIndex) => (
+                        <div className='column' key={ columnIndex }
+                            onClick={ () => this.updateBoardWithNextOpponentMove(columnIndex) }>
+                                { column.map((element, rowIndex) => (
                                     <div className={ `row ${getElementColorStyle(element)}` }
                                         key={ shortid.generate() }></div>
                                 )) }

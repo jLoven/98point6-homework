@@ -22,10 +22,14 @@ const RETRY_CONDITIONS = {
 const RED_CIRCLE_STYLE = 'red-filled-circle';
 const BLUE_CIRCLE_STYLE = 'blue-filled-circle';
 
+// Number of sequential tokens to win the game.
+const REQUIRED_SEQUENTIAL_TOKENS_TO_WIN = 4;
+
 export {
 	LOADING_TEXT,
 	API_ENDPOINT,
 	RETRY_CONDITIONS,
 	RED_CIRCLE_STYLE,
 	BLUE_CIRCLE_STYLE,
+	REQUIRED_SEQUENTIAL_TOKENS_TO_WIN,
 };
