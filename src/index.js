@@ -6,22 +6,16 @@ import shortid from 'shortid'; //  Used to generate unique key for elements of g
 var fetch = require('fetch-retry');
 
 import { 
-    LOADING_TEXT, RETRY_CONDITIONS,
+    LOADING_TEXT, 
+    RETRY_CONDITIONS,
     RED_CIRCLE_STYLE,
     BLUE_CIRCLE_STYLE,
     REQUIRED_SEQUENTIAL_TOKENS_TO_WIN } from './constants/constants.js';
 import { getApiEndpointWithQueryParams } from './provider/apiEndpointProvider.js';
-import { doesCurrentMoveWinGame } from './validator/gameWinValidator.js';
+import { getInitializedBoard } from './provider/initialStateProvider.js';
+import { isCurrentMoveInsideSequenceOfWinningTokens } from './validator/gameWinValidator.js';
 
 import './styles/gameboard.scss';
-
-function getInitializedBoard(width, height) {
-    var rows = new Array(height);
-    for (var i = 0; i < rows.length; i++) {
-        rows[i] = new Array(width).fill(0);
-    }
-    return rows;
-}
 
 function getElementColorStyle(element) {
     var style;
@@ -43,7 +37,7 @@ class App extends Component {
         super();
         this.state = {
             isLoaded: false,
-            board: getInitializedBoard(4, 4),
+            board: getInitializedBoard(),
             moves: [],
         };
     }
@@ -71,8 +65,8 @@ class App extends Component {
             if (board[columnIndex][i] === 0) {
                 isOpponent ? board[columnIndex][i] = 2 : board[columnIndex][i] = 1;
                 this.updateMoves(columnIndex);
-                
-                console.log(this.doesCurrentMoveWinGameForBoard(columnIndex, i));
+
+                console.log(isCurrentMoveInsideSequenceOfWinningTokens(board, columnIndex, i));
                 break;
             }
         }
@@ -103,14 +97,6 @@ class App extends Component {
         const { moves } = this.state;
         this.addMarkerToLowestPositionInColumn(userMove, false);
         this.getNextOpponentMove(moves)
-    }
-
-    /**
-     * Validates whether this board is a winning board for the current move at columnIndex, rowIndex.
-     */
-    doesCurrentMoveWinGameForBoard(columnIndex, rowIndex) {
-        const { board } = this.state;
-        return doesCurrentMoveWinGame(board, columnIndex, rowIndex);
     }
 
     render() {

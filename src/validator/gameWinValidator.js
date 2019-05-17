@@ -3,91 +3,66 @@
 import { REQUIRED_SEQUENTIAL_TOKENS_TO_WIN } from '../constants/constants.js';
 
 /**
- * Before checking whether there are any diagonal or downward wins,
- * first check if there are more than (REQUIRED_SEQUENTIAL_TOKENS_TO_WIN - 1) spots below the latest move.
+ * Check if the current token is inside a sequence of winning tokens, given a board and current move and its location in terms of column and row.
+ * Total in any linear direction must be REQUIRED_SEQUENTIAL_TOKENS_TO_WIN - 1 in order to win.
  */
-function doesMarkerHaveEnoughSpotsBelowToWin(rowIndex, columnLength) {
-    return (rowIndex + REQUIRED_SEQUENTIAL_TOKENS_TO_WIN <= columnLength);
-}
-
-/**
- * Before checking whether there are any rightward wins,
- * first check if there are more than (REQUIRED_SEQUENTIAL_TOKENS_TO_WIN - 1) spots to the right of the latest move.
- */
-function doesMarkerHaveEnoughSpotsToRightToWin(columnIndex, rowLength) {
-    return (columnIndex + REQUIRED_SEQUENTIAL_TOKENS_TO_WIN <= rowLength);
-}
-
-/**
- * Before checking whether there are any leftward wins,
- * first check if there are more than (REQUIRED_SEQUENTIAL_TOKENS_TO_WIN - 1) spots to the left of the latest move.
- */
-function doesMarkerHaveEnoughSpotsToLeftToWin(columnIndex, rowLength) {
-    return (columnIndex - REQUIRED_SEQUENTIAL_TOKENS_TO_WIN + 1 >= 0);
-}
-
-/**
- * Check if the current token begins a sequence of winning tokens, given a board and current move and its location in terms of column and row.
- * columnIndexLoopVar and rowIndexLoopVar are used to define the direction of the sequence check.
- */
-function doesCurrentMoveStartSequenceOfWinningTokens(board, currentMove, 
-    columnIndex, rowIndex, columnIndexLoopVar, rowIndexLoopVar) {
-    for (var i = 0; i < REQUIRED_SEQUENTIAL_TOKENS_TO_WIN; i++) {
-        var currentToken = board[columnIndex + columnIndexLoopVar * i][rowIndex + rowIndexLoopVar * i];
-        if (currentToken !== currentMove) {
-            return false;
-        }
-    }
-    return true;
-}
-
-/**
- * Checks if the current value of the latest move is the same as the number of sequential values
- * below, right, left, diagonal downward-right, or diagonal downward-left (up to REQUIRED_SEQUENTIAL_TOKENS_TO_WIN).
- * Does not need to check if there is a winning combination above,
- * because later moves will check below them using this function.
- */
-function doesCurrentMoveWinGame(board, columnIndex, rowIndex) {
+function isCurrentMoveInsideSequenceOfWinningTokens(board, columnIndex, rowIndex) {
     const currentMove = board[columnIndex][rowIndex];
-    const enoughSpaceBelow = doesMarkerHaveEnoughSpotsBelowToWin(rowIndex, board[columnIndex].length);
-    const enoughSpaceToRight = doesMarkerHaveEnoughSpotsToRightToWin(columnIndex, board.length);
-    const enoughSpaceToLeft = doesMarkerHaveEnoughSpotsToLeftToWin(columnIndex, board.length);
+    var totalLeft = 0;
+    var totalRight = 0;
+    var totalBelow = 0;
+    var totalDiagonalUpRight = 0;
+    var totalDiagonalDownLeft = 0;
+    var totalDiagonalUpLeft = 0;
+    var totalDiagonalDownRight = 0;
 
-    // DOWN: check board[columnIndex][rowIndex + i]
-    if (enoughSpaceBelow && doesCurrentMoveStartSequenceOfWinningTokens(board, currentMove, columnIndex, rowIndex, 0, 1)) {
-        return true;
-    }
-
-    if (enoughSpaceToRight) {
-        // RIGHT: check board[columnIndex + i][rowIndex]
-        if (doesCurrentMoveStartSequenceOfWinningTokens(board, currentMove, columnIndex, rowIndex, 1, 0)) {
+    for (var i = 1; i < REQUIRED_SEQUENTIAL_TOKENS_TO_WIN; i++) {
+        var nextColumnExists = (board[columnIndex + i] !== undefined);
+        var previousColumnExists = (board[columnIndex - i] !== undefined);
+        // Count number of tokens to left and right:
+        if (nextColumnExists && currentMove === board[columnIndex + i][rowIndex]) {
+            totalRight++;
+        }
+        if (previousColumnExists && currentMove === board[columnIndex - i][rowIndex]) {
+            totalLeft++;
+        }
+        if (totalRight + totalLeft + 1 >= REQUIRED_SEQUENTIAL_TOKENS_TO_WIN) {
             return true;
         }
 
-        if (enoughSpaceBelow) {
-            // DOWNWARD-RIGHT DIAGONAL: check board[columnIndex + i][rowIndex + i]
-            if (doesCurrentMoveStartSequenceOfWinningTokens(board, currentMove, columnIndex, rowIndex, 1, 1)) {
+        // Count number of tokens below:
+        if (currentMove === board[columnIndex][rowIndex + i]) {
+            totalBelow++;
+            if (totalBelow + 1 === REQUIRED_SEQUENTIAL_TOKENS_TO_WIN) {
                 return true;
             }
         }
-    }
 
-    if (enoughSpaceToLeft) {
-        // LEFT: check board[columnIndex - i][rowIndex]
-        if (doesCurrentMoveStartSequenceOfWinningTokens(board, currentMove, columnIndex, rowIndex, -1, 0)) {
+        // Count number of tokens to diagonal up right and diagonal down left:
+        if (nextColumnExists && currentMove === board[columnIndex + i][rowIndex - i]) {
+            totalDiagonalUpRight++;
+        }
+        if (previousColumnExists && currentMove === board[columnIndex - i][rowIndex + i]) {
+            totalDiagonalDownLeft++;
+        }
+        if (totalDiagonalUpRight + totalDiagonalDownLeft + 1 >= REQUIRED_SEQUENTIAL_TOKENS_TO_WIN) {
             return true;
         }
 
-        if (enoughSpaceBelow) {
-            // DOWNWARD-LEFT DIAGONAL: check board[columnIndex - i][rowIndex + i]
-            if (doesCurrentMoveStartSequenceOfWinningTokens(board, currentMove, columnIndex, rowIndex, -1, 1)) {
-                return true;
-            }
+        // Count number of tokens to diagonal up left and diagonal down right:
+        if (nextColumnExists && currentMove === board[columnIndex + i][rowIndex + i]) {
+            totalDiagonalDownRight++;
+        }
+        if (previousColumnExists && currentMove === board[columnIndex - i][rowIndex - i]) {
+            totalDiagonalUpLeft++;
+        }
+        if (totalDiagonalUpLeft + totalDiagonalDownRight + 1 >= REQUIRED_SEQUENTIAL_TOKENS_TO_WIN) {
+            return true;
         }
     }
     return false; // No win in any direction
 }
 
 export {
-    doesCurrentMoveWinGame,
+    isCurrentMoveInsideSequenceOfWinningTokens,
 };
