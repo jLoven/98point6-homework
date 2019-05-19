@@ -3,7 +3,8 @@
 // Text shown on the UI
 const LOADING_TEXT = 'Loading...';
 const GAME_OVER_TEXT = 'Game Over!';
-const INVALID_MOVE_TEXT = 'That column is full- try a different one!'
+const INVALID_MOVE_TEXT = 'That column is full- try a different one!';
+const GAME_DRAW_TEXT = 'It\'s a draw!'
 
 // Location of 9dt API
 const API_ENDPOINT = 'https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?';
@@ -31,10 +32,15 @@ const REQUIRED_SEQUENTIAL_TOKENS_TO_WIN = 4;
 const BOARD_HEIGHT = 4;
 const BOARD_WIDTH = 4;
 
+// Game error types
+const GAME_ERROR_COLUMN_FULL = 'columnFullError';
+const GAME_ERROR_DRAW = 'gameDrawError';
+
 export {
     LOADING_TEXT,
     GAME_OVER_TEXT,
     INVALID_MOVE_TEXT,
+    GAME_DRAW_TEXT,
     API_ENDPOINT,
     RETRY_CONDITIONS,
     RED_CIRCLE_STYLE,
@@ -42,4 +48,6 @@ export {
     REQUIRED_SEQUENTIAL_TOKENS_TO_WIN,
     BOARD_HEIGHT,
     BOARD_WIDTH,
+    GAME_ERROR_COLUMN_FULL,
+    GAME_ERROR_DRAW,
 };

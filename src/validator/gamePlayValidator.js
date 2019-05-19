@@ -8,6 +8,19 @@ function isUserMoveValid(columnIndex, board) {
     return topSpace === 0 ? true : false;
 }
 
+/**
+ * Check whether the board is full, and if it is full, the game is a draw and should be over.
+ */
+function isDraw(board) {
+    for (let column of board) {
+        if (column[0] === 0) {
+            return false;
+        }
+    };
+    return true;
+}
+
 export {
     isUserMoveValid,
+    isDraw,
 }
