@@ -2,6 +2,8 @@
 
 // Text shown on the UI
 const LOADING_TEXT = 'Loading...';
+const GAME_OVER_TEXT = 'Game Over!';
+const INVALID_MOVE_TEXT = 'That column is full- try a different one!'
 
 // Location of 9dt API
 const API_ENDPOINT = 'https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?';
@@ -31,6 +33,8 @@ const BOARD_WIDTH = 4;
 
 export {
     LOADING_TEXT,
+    GAME_OVER_TEXT,
+    INVALID_MOVE_TEXT,
     API_ENDPOINT,
     RETRY_CONDITIONS,
     RED_CIRCLE_STYLE,

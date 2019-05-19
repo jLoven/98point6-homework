@@ -5,6 +5,8 @@ import ReactDOM from 'react-dom';
 import shortid from 'shortid'; //  Used to generate unique key for elements of gameboard array
 var fetch = require('fetch-retry');
 
+import GameError from './components/gameError.js';
+import GameOver from './components/gameOver.js';
 import { 
     LOADING_TEXT, 
     RETRY_CONDITIONS,
@@ -14,6 +16,7 @@ import {
 import { getApiEndpointWithQueryParams } from './provider/apiEndpointProvider.js';
 import { getInitializedBoard } from './provider/initialStateProvider.js';
 import { isCurrentMoveInsideSequenceOfWinningTokens } from './validator/gameWinValidator.js';
+import { isUserMoveValid } from './validator/gamePlayValidator.js';
 
 import './styles/gameboard.scss';
 
@@ -32,13 +35,16 @@ function getElementColorStyle(element) {
     return style;
 }
 
-class App extends Component {
+class DropTokenGameboard extends Component {
     constructor() {
         super();
         this.state = {
             isLoaded: false,
             board: getInitializedBoard(),
             moves: [],
+            userBeginsGame: true,
+            gameError: false,
+            gameOver: false,
         };
     }
 
@@ -47,36 +53,42 @@ class App extends Component {
     }
 
     /**
-     * Updates the state to contain the column index of the latest user move. 
+     * Get the lowest item in the column that doesn't have a token in it, and place a token there.
+     * If the move was not the opponent service, get the next opponent move from the API.
      */
-    updateMoves(columnIndex) {
+    addMarkerToLowestPositionInColumn(columnIndex, isOpponent) {
+        const { board, gameOver } = this.state;
         var { moves } = this.state;
-        moves.push(columnIndex);
-        this.setState({ moves: moves });
+        if (!gameOver) {
+            var doesCurrentMoveWinGame;
+            for (var i = board[columnIndex].length; i >= 0; i--) {
+                if (board[columnIndex][i] === 0) {
+                    isOpponent ? board[columnIndex][i] = 2 : board[columnIndex][i] = 1;
+                    moves.push(columnIndex);
+                    this.setState({ 
+                        board: board, 
+                        moves: moves
+                    }, () => {
+                        const isWinningMove = isCurrentMoveInsideSequenceOfWinningTokens(board, columnIndex, i);
+                        if (isWinningMove) {
+                            this.setState({ gameOver: true });
+                        } else if (!isOpponent) {
+                            this.getNextOpponentMove();
+                        }
+                    });
+                    break;
+                }
+            }
+        
+        }
     }
 
     /**
-     * Get the lowest item in the column that doesn't have a marker in it, and place a marker there.
+     * Given the array of current moves, call the API to retrieve the next opponent move from the service.
      */
-    addMarkerToLowestPositionInColumn(columnIndex, isOpponent) {
-        var { board } = this.state;
-
-        for (var i = board[columnIndex].length; i >= 0; i--) {
-            if (board[columnIndex][i] === 0) {
-                isOpponent ? board[columnIndex][i] = 2 : board[columnIndex][i] = 1;
-                this.updateMoves(columnIndex);
-
-                console.log(isCurrentMoveInsideSequenceOfWinningTokens(board, columnIndex, i));
-                break;
-            }
-        }
-        this.setState({ board: board });
-    }
-
     getNextOpponentMove() {
         const { moves } = this.state;
         const endpoint = getApiEndpointWithQueryParams(moves);
-
         fetch(endpoint, RETRY_CONDITIONS)
             .then(res => res.json())
             .then(
@@ -93,29 +105,44 @@ class App extends Component {
             );
     }
 
+    /**
+     * Check if column is full before user tries to click to place a token there.
+     * Place the game board component in an error state if it is not valid to place a token there.
+     * If the move is valid, add a token there.
+     */
     updateBoardWithNextOpponentMove(userMove) {
-        const { moves } = this.state;
-        this.addMarkerToLowestPositionInColumn(userMove, false);
-        this.getNextOpponentMove(moves)
+        const { board } = this.state;
+        const valid = isUserMoveValid(userMove, board);
+        this.setState({ gameError: !valid ? true : false }, () => {
+            const { gameError } = this.state;
+            if (!gameError) {
+                this.addMarkerToLowestPositionInColumn(userMove, false);
+            }
+        });
     }
 
     render() {
         const { isLoaded, board } = this.state;
+        var { gameError, gameOver } = this.state;
 
         if (!isLoaded) {
             return <div>{ LOADING_TEXT }</div>;
         } else {
             return(
-                <div className="flex-container">
-                    { board.map((column, columnIndex) => (
-                        <div className='column' key={ columnIndex }
-                            onClick={ () => this.updateBoardWithNextOpponentMove(columnIndex) }>
-                                { column.map((element, rowIndex) => (
-                                    <div className={ `row ${getElementColorStyle(element)}` }
-                                        key={ shortid.generate() }></div>
-                                )) }
-                        </div>
-                    )) }
+                <div>
+                    <div className="flex-container">
+                        { board.map((column, columnIndex) => (
+                            <div className='column' key={ columnIndex }
+                                onClick={ () => { this.updateBoardWithNextOpponentMove(columnIndex) } }>
+                                    { column.map((element, rowIndex) => (
+                                        <div className={ `row ${getElementColorStyle(element)}` }
+                                            key={ shortid.generate() }></div>
+                                    )) }
+                            </div>
+                        )) }
+                    </div>
+                    { (gameError && !gameOver) ? <GameError /> : null }
+                    { gameOver ? <GameOver /> : null }
                 </div>
             );
         }
@@ -124,4 +151,4 @@ class App extends Component {
 
 const root = document.getElementById('root');
 
-ReactDOM.render(<App />, root);
+ReactDOM.render(<DropTokenGameboard />, root);
