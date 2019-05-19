@@ -18,7 +18,7 @@ class GameOver extends Component {
         const { winner, errorType } = this.state;
         return(
             <div className='button-wrapper'>
-                <div className={ errorType !== GAME_ERROR_DRAW ? 'game-alert-text' : ''}>
+                <div className='game-alert-text'>
                     { winner !== NO_PLAYER_VALUE ? GAME_OVER_TEXT : '' } { WINNER_TEXT[winner] }
                 </div>
                 <button className='text-button' onClick={() => (this.props.reset())} >{ PLAY_AGAIN_TEXT }</button>

@@ -15,7 +15,7 @@ const WINNER_TEXT = {
     [SERVICE_PLAYER_VALUE]: 'I won!',
 };
 const PLAY_AGAIN_TEXT = 'Play Again';
-const SERVICE_PLAYS_FIRST_TEXT = 'Make me play first!';
+const SERVICE_PLAYS_FIRST_TEXT = 'Let CPU go first!';
 
 // Location of 9dt API
 const API_ENDPOINT = 'https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?';
@@ -26,7 +26,7 @@ const API_ENDPOINT = 'https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/pro
  * retryDelay: milliseconds between requests
  * retryOn: List of HTTP status codes to trigger a retry.
  */
-const RETRY_CONDITIONS = { 
+const RETRY_CONDITIONS = {
     retries: 0,
     retryDelay: 250,
     retryOn: [500],

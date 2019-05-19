@@ -14,30 +14,20 @@ $max-dimension: 130px;
 }
 
 .flexbox-padding {
-    flex: 2 2 5em;
+    flex: 3 3 3em;
 }
 
 .header {
     text-align: center;
-    margin: 1.5rem;
-    font-size: 1.9rem;
+    margin-top: 20px;
+    font-size: calc(80px + 0.05vh);
 }
 
 .game-rules {
     text-align: center;
-    font-size: 0.95rem;
+    font-size: calc(33px + 0.1vh);
     color: lightslategray;
-    margin: 1.5rem;
-}
-
-.footer {
-    color: lightgray;
-    position: absolute;
-    bottom: 0.3rem;
-    position: fixed;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    margin: 0 auto;
+    margin: 10px 30px 30px 30px;
 }
 
 .filled-circle {
@@ -80,15 +70,18 @@ $max-dimension: 130px;
 }
 
 .text-button {
-    margin: 0.5rem;
+    margin: 30px;
     background: RoyalBlue;
     color: white;
-    height: 2rem;
-    font-size: 0.95rem;
+    height: 80px;
+    width: 45vw;
+    max-width: 400px;
+    font-size: 40px;
     border: 2px solid RoyalBlue;
     border-radius: 4px;
 }
 
 .game-alert-text {
     margin-top: 0.8rem;
+    font-size: calc(33px + 0.1vh);
 }
