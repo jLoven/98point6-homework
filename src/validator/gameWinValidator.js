@@ -4,7 +4,7 @@ import { REQUIRED_SEQUENTIAL_TOKENS_TO_WIN } from '../constants/constants.js';
 
 /**
  * Check if the current token is inside a sequence of winning tokens, given a board and current move and its location in terms of column and row.
- * Total in any linear direction must be REQUIRED_SEQUENTIAL_TOKENS_TO_WIN - 1 in order to win.
+ * Total in any linear direction from the given token must be REQUIRED_SEQUENTIAL_TOKENS_TO_WIN - 1 in order to win.
  */
 function isCurrentMoveInsideSequenceOfWinningTokens(board, columnIndex, rowIndex) {
     const currentMove = board[columnIndex][rowIndex];

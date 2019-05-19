@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import shortid from 'shortid'; //  Used to generate unique key for elements of gameboard array
+import shortid from 'shortid'; // Used to generate unique key for elements of gameboard array
 var fetch = require('fetch-retry');
 
 import GameError from './components/gameError.js';
@@ -26,6 +26,9 @@ import { isUserMoveValid, isDraw } from './validator/gamePlayValidator.js';
 
 import './styles/gameboard.scss';
 
+/**
+ * Style the gameboard tokens according to which player they belong to.
+ */
 function getElementColorStyle(element) {
     var style;
     switch(element) {
@@ -57,6 +60,9 @@ class DropTokenGameboard extends Component {
         this.reset = this.reset.bind(this);
     }
 
+    /**
+     * Reset the game board to its initial state when the user would like to play again.
+     */
     reset() {
         const initialState = getInitialState();
         this.setState({
@@ -82,7 +88,6 @@ class DropTokenGameboard extends Component {
         const { board, gameOver, gameErrorType } = this.state;
         var { moves } = this.state;
         if (!gameOver) {
-            var doesCurrentMoveWinGame;
             for (var i = board[columnIndex].length; i >= 0; i--) {
                 if (board[columnIndex][i] === NO_PLAYER_VALUE) {
                     isOpponent ? board[columnIndex][i] = SERVICE_PLAYER_VALUE : board[columnIndex][i] = USER_PLAYER_VALUE;
@@ -141,7 +146,7 @@ class DropTokenGameboard extends Component {
     /**
      * Check if column is full before user tries to click to place a token there.
      * Place the game board component in an error state if it is not valid to place a token there.
-     * If the move is valid, add a token there.
+     * If the move is valid, add a token there and trigger a call for the next API move.
      */
     updateBoardWithMove(userMove) {
         const { board, gameErrorType } = this.state;
@@ -183,7 +188,10 @@ class DropTokenGameboard extends Component {
                             this.setState({ isServicePlayFirstButtonHidden: true });
                         }}
                     >{ SERVICE_PLAYS_FIRST_TEXT }</button>
-                    { gameError ? <GameError errorType={ gameErrorType } gameOver={ gameOver } /> : null }
+                    { gameError ? <GameError
+                        errorType={ gameErrorType }
+                        gameOver={ gameOver }
+                        hasWinner={ winner !== NO_PLAYER_VALUE }/> : null }
                     { gameOver ? <GameOver winner={ winner } reset={ this.reset } /> : null }
                 </div>
             );

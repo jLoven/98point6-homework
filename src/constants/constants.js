@@ -20,7 +20,7 @@ const SERVICE_PLAYS_FIRST_TEXT = 'Make me play first!';
 // Location of 9dt API
 const API_ENDPOINT = 'https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?';
 
-/*
+/**
  * Settings for the 'fetch-retry' Ajax call.
  * retries: number of retries (currently set to 0)
  * retryDelay: milliseconds between requests
@@ -39,11 +39,15 @@ const BLUE_CIRCLE_STYLE = 'blue-filled-circle';
 // Number of sequential tokens to win the game
 const REQUIRED_SEQUENTIAL_TOKENS_TO_WIN = 4;
 
-// Height and width of game board
+// Height and width of game board (API only supports 4 for height and width)
 const BOARD_HEIGHT = 4;
 const BOARD_WIDTH = 4;
 
-// Game error types
+/**
+ * Game error types
+ * GAME_ERROR_COLUMN_FULL means the column has no more spaces for the user to place a token
+ * GAME_ERROR_DRAW means the board is full and neither the user nor the service has won
+ */
 const GAME_ERROR_COLUMN_FULL = 'columnFullError';
 const GAME_ERROR_DRAW = 'gameDrawError';
 
