@@ -1,10 +1,21 @@
 'use strict';
 
+// Game player values on board for 1 user and 1 service oppnonent
+const NO_PLAYER_VALUE = 0;
+const USER_PLAYER_VALUE = 1;
+const SERVICE_PLAYER_VALUE = 2;
+
 // Text shown on the UI
 const LOADING_TEXT = 'Loading...';
 const GAME_OVER_TEXT = 'Game Over!';
 const INVALID_MOVE_TEXT = 'That column is full- try a different one!';
 const GAME_DRAW_TEXT = 'It\'s a draw!'
+const WINNER_TEXT = {
+    [USER_PLAYER_VALUE]: 'You won!',
+    [SERVICE_PLAYER_VALUE]: 'I won!',
+};
+const PLAY_AGAIN_TEXT = 'Play Again';
+const SERVICE_PLAYS_FIRST_TEXT = 'Make me play first!';
 
 // Location of 9dt API
 const API_ENDPOINT = 'https://w0ayb2ph1k.execute-api.us-west-2.amazonaws.com/production?';
@@ -37,10 +48,16 @@ const GAME_ERROR_COLUMN_FULL = 'columnFullError';
 const GAME_ERROR_DRAW = 'gameDrawError';
 
 export {
+    NO_PLAYER_VALUE,
+    USER_PLAYER_VALUE,
+    SERVICE_PLAYER_VALUE,
     LOADING_TEXT,
     GAME_OVER_TEXT,
     INVALID_MOVE_TEXT,
     GAME_DRAW_TEXT,
+    WINNER_TEXT,
+    PLAY_AGAIN_TEXT,
+    SERVICE_PLAYS_FIRST_TEXT,
     API_ENDPOINT,
     RETRY_CONDITIONS,
     RED_CIRCLE_STYLE,

@@ -1,6 +1,6 @@
 'use strict';
 
-import { BOARD_HEIGHT, BOARD_WIDTH } from '../constants/constants.js';
+import { BOARD_HEIGHT, BOARD_WIDTH, NO_PLAYER_VALUE } from '../constants/constants.js';
 
 /**
  * Return an array of specified height and width, with value 0 for each element.
@@ -13,6 +13,19 @@ function getInitializedBoard() {
     return rows;
 }
 
+function getInitialState() {
+	return {
+        board: getInitializedBoard(),
+        moves: [],
+        gameError: false,
+        gameErrorType: '',
+        gameOver: false,
+        winner: NO_PLAYER_VALUE,
+        isServicePlayFirstButtonHidden: false,
+    };
+}
+
 export {
-    getInitializedBoard,
+	getInitializedBoard,
+    getInitialState,
 };

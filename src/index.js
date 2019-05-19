@@ -8,15 +8,19 @@ var fetch = require('fetch-retry');
 import GameError from './components/gameError.js';
 import GameOver from './components/gameOver.js';
 import { 
-    LOADING_TEXT, 
+    LOADING_TEXT,
+    SERVICE_PLAYS_FIRST_TEXT, 
     RETRY_CONDITIONS,
     RED_CIRCLE_STYLE,
     BLUE_CIRCLE_STYLE,
     REQUIRED_SEQUENTIAL_TOKENS_TO_WIN,
     GAME_ERROR_COLUMN_FULL,
-    GAME_ERROR_DRAW, } from './constants/constants.js';
+    GAME_ERROR_DRAW,
+    NO_PLAYER_VALUE,
+    USER_PLAYER_VALUE,
+    SERVICE_PLAYER_VALUE, } from './constants/constants.js';
 import { getApiEndpointWithQueryParams } from './provider/apiEndpointProvider.js';
-import { getInitializedBoard } from './provider/initialStateProvider.js';
+import { getInitializedBoard, getInitialState } from './provider/initialStateProvider.js';
 import { isCurrentMoveInsideSequenceOfWinningTokens } from './validator/gameWinValidator.js';
 import { isUserMoveValid, isDraw } from './validator/gamePlayValidator.js';
 
@@ -25,10 +29,10 @@ import './styles/gameboard.scss';
 function getElementColorStyle(element) {
     var style;
     switch(element) {
-        case 1:
+        case USER_PLAYER_VALUE:
             style = RED_CIRCLE_STYLE;
             break;
-        case 2:
+        case SERVICE_PLAYER_VALUE:
             style = BLUE_CIRCLE_STYLE;
             break;
         default:
@@ -44,11 +48,26 @@ class DropTokenGameboard extends Component {
             isLoaded: false,
             board: getInitializedBoard(),
             moves: [],
-            userBeginsGame: true,
             gameError: false,
             gameErrorType: '',
             gameOver: false,
+            winner: NO_PLAYER_VALUE,
+            isServicePlayFirstButtonHidden: false,
         };
+        this.reset = this.reset.bind(this);
+    }
+
+    reset() {
+        const initialState = getInitialState();
+        this.setState({
+            board: initialState['board'],
+            moves: initialState['moves'],
+            gameError: initialState['gameError'],
+            gameErrorType: initialState['gameErrorType'],
+            gameOver: initialState['gameOver'],
+            winner: initialState['winner'],
+            isServicePlayFirstButtonHidden: initialState['isServicePlayFirstButtonHidden'],
+        });
     }
 
     componentDidMount() {
@@ -65,12 +84,13 @@ class DropTokenGameboard extends Component {
         if (!gameOver) {
             var doesCurrentMoveWinGame;
             for (var i = board[columnIndex].length; i >= 0; i--) {
-                if (board[columnIndex][i] === 0) {
-                    isOpponent ? board[columnIndex][i] = 2 : board[columnIndex][i] = 1;
+                if (board[columnIndex][i] === NO_PLAYER_VALUE) {
+                    isOpponent ? board[columnIndex][i] = SERVICE_PLAYER_VALUE : board[columnIndex][i] = USER_PLAYER_VALUE;
                     moves.push(columnIndex);
                     this.setState({ 
                         board: board, 
-                        moves: moves
+                        moves: moves,
+                        isServicePlayFirstButtonHidden: true,
                     }, () => {
                         const isBoardDraw = isDraw(board);
                         this.setState({
@@ -80,7 +100,10 @@ class DropTokenGameboard extends Component {
                         });
                         const isWinningMove = isCurrentMoveInsideSequenceOfWinningTokens(board, columnIndex, i);
                         if (isWinningMove) {
-                            this.setState({ gameOver: true });
+                            this.setState({ 
+                                gameOver: true,
+                                winner: board[columnIndex][i],
+                            });
                         } else if (!isOpponent) {
                             this.getNextMoveFromApi();
                         }
@@ -135,8 +158,7 @@ class DropTokenGameboard extends Component {
     }
 
     render() {
-        const { isLoaded, board } = this.state;
-        var { gameError, gameOver, gameErrorType } = this.state;
+        const { isLoaded, board, gameError, gameOver, gameErrorType, winner, isServicePlayFirstButtonHidden } = this.state;
 
         if (!isLoaded) {
             return <div>{ LOADING_TEXT }</div>;
@@ -154,8 +176,15 @@ class DropTokenGameboard extends Component {
                             </div>
                         )) }
                     </div>
-                    { gameError ? <GameError errorType={ gameErrorType } gameOver={gameOver} /> : null }
-                    { gameOver ? <GameOver /> : null }
+                    <button 
+                        className={ isServicePlayFirstButtonHidden ? 'hidden-button' : '' }
+                        onClick={() => { 
+                            this.getNextMoveFromApi();
+                            this.setState({ isServicePlayFirstButtonHidden: true });
+                        }}
+                    >{ SERVICE_PLAYS_FIRST_TEXT }</button>
+                    { gameError ? <GameError errorType={ gameErrorType } gameOver={ gameOver } /> : null }
+                    { gameOver ? <GameOver winner={ winner } reset={ this.reset } /> : null }
                 </div>
             );
         }
