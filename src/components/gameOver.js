@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 
 import { GAME_OVER_TEXT, WINNER_TEXT, PLAY_AGAIN_TEXT } from '../constants/constants.js';
+import '../styles/gameboard.scss';
 
 class GameOver extends Component {
     constructor(props) {
@@ -15,9 +16,9 @@ class GameOver extends Component {
     render() {
         const { winner } = this.state;
         return(
-            <div>
-                <div>{ GAME_OVER_TEXT } { WINNER_TEXT[winner] }</div>
-                <button className='' onClick={() => (this.props.reset())} >{ PLAY_AGAIN_TEXT }</button>
+            <div className='button-wrapper'>
+                <div className='game-alert-text'>{ GAME_OVER_TEXT } { WINNER_TEXT[winner] }</div>
+                <button className='text-button' onClick={() => (this.props.reset())} >{ PLAY_AGAIN_TEXT }</button>
             </div>
         );
     }

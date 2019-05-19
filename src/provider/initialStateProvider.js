@@ -24,7 +24,7 @@ function getInitializedBoard() {
  * isServicePlayFirstButtonHidden: Tracks whether the button to allow the service to play first is hidden
  */
 function getInitialState() {
-	return {
+    return {
         board: getInitializedBoard(),
         moves: [],
         gameError: false,
@@ -36,6 +36,6 @@ function getInitialState() {
 }
 
 export {
-	getInitializedBoard,
+    getInitializedBoard,
     getInitialState,
 };

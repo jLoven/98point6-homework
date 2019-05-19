@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 
 import { INVALID_MOVE_TEXT, GAME_DRAW_TEXT, GAME_ERROR_COLUMN_FULL, GAME_ERROR_DRAW } from '../constants/constants.js';
+import '../styles/gameboard.scss';
 
 class GameError extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class GameError extends Component {
             errorTextToDisplay = GAME_DRAW_TEXT;
         }
         return(
-            <div>{ errorTextToDisplay }</div>
+            <div className='game-alert-text button-wrapper'>{ errorTextToDisplay }</div>
         );
     }
 }

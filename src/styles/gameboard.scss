@@ -1,35 +1,93 @@
+$circle-size: 15vw;
+
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
 .flex-container {
     display: flex;
 }
 
+.flexbox-center {
+    flex: 1 1 15em;
+}
+
+.flexbox-padding {
+    flex: 2 2 20em;
+}
+
+.header {
+    text-align: center;
+    margin: 1.5rem;
+    font-size: 1.9rem;
+}
+
+.game-rules {
+    text-align: center;
+    font-size: 0.95rem;
+    color: lightslategray;
+    margin: 1.5rem;
+}
+
+.footer {
+    color: lightgray;
+    position: absolute;
+    bottom: 2rem;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
 .filled-circle {
-    width: 15vw;
-    height: 15vw;
+    width: $circle-size;
+    height: $circle-size;
     border-radius: 50%;
 }
 
 .red-filled-circle {
     @extend .filled-circle;
-    border: 1px solid red;
-    background-color: red;
+    background-color: #f5200e;
 }
 
 .blue-filled-circle {
     @extend .filled-circle;
-    border: 1px solid blue;
-    background-color: blue;
+    background-color: RoyalBlue;
 }
 
 .column {
-    width: 15vw;
+    width: $circle-size;
     text-align: center;
+    max-width: 100px;
+    padding-left: 1px;
 }
 
 .row {
-    height: 15vw;
-    outline: 1px solid gray;
+    height: $circle-size;
+    outline: 1px solid LightGray;
+    max-height: 100px;
+    max-width: 100px;
+    margin-top: 1px;
 }
 
 .hidden-button {
     display: none;
+}
+
+.button-wrapper {
+    text-align: center;
+}
+
+.text-button {
+    margin: 2rem;
+    background: RoyalBlue;
+    color: white;
+    height: 2.6rem;
+    font-size: 0.95rem;
+    border: 2px solid RoyalBlue;
+    border-radius: 4px;
+}
+
+.game-alert-text {
+    margin-top: 0.8rem;
 }

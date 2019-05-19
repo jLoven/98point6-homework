@@ -9,7 +9,7 @@ const SERVICE_PLAYER_VALUE = 2;
 const LOADING_TEXT = 'Loading...';
 const GAME_OVER_TEXT = 'Game Over!';
 const INVALID_MOVE_TEXT = 'That column is full- try a different one!';
-const GAME_DRAW_TEXT = 'It\'s a draw!'
+const GAME_DRAW_TEXT = 'It\'s a draw.'
 const WINNER_TEXT = {
     [USER_PLAYER_VALUE]: 'You won!',
     [SERVICE_PLAYER_VALUE]: 'I won!',

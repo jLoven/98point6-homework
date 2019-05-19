@@ -170,7 +170,7 @@ class DropTokenGameboard extends Component {
         } else {
             return(
                 <div>
-                    <div className="flex-container">
+                    <div className='flex-container'>
                         { board.map((column, columnIndex) => (
                             <div className='column' key={ columnIndex }
                                 onClick={ () => { this.updateBoardWithMove(columnIndex) } }>
@@ -181,13 +181,15 @@ class DropTokenGameboard extends Component {
                             </div>
                         )) }
                     </div>
-                    <button 
-                        className={ isServicePlayFirstButtonHidden ? 'hidden-button' : '' }
-                        onClick={() => { 
-                            this.getNextMoveFromApi();
-                            this.setState({ isServicePlayFirstButtonHidden: true });
-                        }}
-                    >{ SERVICE_PLAYS_FIRST_TEXT }</button>
+                    <div className='button-wrapper'>
+                        <button
+                            className={ isServicePlayFirstButtonHidden ? 'hidden-button' : 'text-button' }
+                            onClick={() => {
+                                this.getNextMoveFromApi();
+                                this.setState({ isServicePlayFirstButtonHidden: true });
+                            }}
+                        >{ SERVICE_PLAYS_FIRST_TEXT }</button>
+                    </div>
                     { gameError ? <GameError
                         errorType={ gameErrorType }
                         gameOver={ gameOver }
