@@ -1,4 +1,5 @@
-$circle-size: 15vw;
+$circle-size: 17vw;
+$max-dimension: 130px;
 
 * {
     font-family: 'Open Sans', sans-serif;
@@ -9,11 +10,11 @@ $circle-size: 15vw;
 }
 
 .flexbox-center {
-    flex: 1 1 15em;
+    flex: 1 1 20em;
 }
 
 .flexbox-padding {
-    flex: 2 2 20em;
+    flex: 2 2 5em;
 }
 
 .header {
@@ -32,7 +33,7 @@ $circle-size: 15vw;
 .footer {
     color: lightgray;
     position: absolute;
-    bottom: 2rem;
+    bottom: 0.3rem;
     position: fixed;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -58,15 +59,15 @@ $circle-size: 15vw;
 .column {
     width: $circle-size;
     text-align: center;
-    max-width: 100px;
+    max-width: $max-dimension;
     padding-left: 1px;
 }
 
 .row {
     height: $circle-size;
     outline: 1px solid LightGray;
-    max-height: 100px;
-    max-width: 100px;
+    max-height: $max-dimension;
+    max-width: $max-dimension;
     margin-top: 1px;
 }
 
@@ -79,10 +80,10 @@ $circle-size: 15vw;
 }
 
 .text-button {
-    margin: 2rem;
+    margin: 0.5rem;
     background: RoyalBlue;
     color: white;
-    height: 2.6rem;
+    height: 2rem;
     font-size: 0.95rem;
     border: 2px solid RoyalBlue;
     border-radius: 4px;

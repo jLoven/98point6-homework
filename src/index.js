@@ -194,7 +194,10 @@ class DropTokenGameboard extends Component {
                         errorType={ gameErrorType }
                         gameOver={ gameOver }
                         hasWinner={ winner !== NO_PLAYER_VALUE }/> : null }
-                    { gameOver ? <GameOver winner={ winner } reset={ this.reset } /> : null }
+                    { gameOver ? <GameOver
+                        winner={ winner }
+                        reset={ this.reset }
+                        errorType={ gameErrorType } /> : null }
                 </div>
             );
         }
